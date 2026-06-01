@@ -126,42 +126,7 @@ Sistem ini memiliki beberapa modul utama yang saling berelasi:
 
 ---
 
-## 📦 Deployment (Hosting)
 
-Aplikasi ini siap di-deploy ke **Vercel** atau **VPS**.
-
-### Opsi A: Vercel (Paling Mudah)
-
-1. Push kode ke GitHub.
-2. Import project di Dashboard Vercel.
-3. Masukkan Environment Variables (`DATABASE_URL`).
-4. Deploy.
-
-### Opsi B: VPS (Ubuntu/CentOS)
-
-1. Build aplikasi:
-   ```bash
-   npm run build
-   ```
-2. Jalankan server production:
-   ```bash
-   npm start
-   ```
-   _(Disarankan menggunakan PM2 atau Docker untuk manajemen proses)._
-
----
-
-## 🛡️ Best Practices & Fitur Keamanan
-
-1.  **Validasi Input Ketat**:
-    - Menggunakan Schema Validation (Zod) di Backend.
-    - Validasi Logika Bisnis (misal: Waktu Selesai tidak boleh < Waktu Mulai).
-2.  **File Management Optimation**:
-    - **Auto-Cleanup**: Menghapus file sampah (orphan files) saat update/delete data.
-    - **Image Compression**: Gambar di-convert otomatis ke format **WebP** menggunakan library `sharp` untuk loading cepat & hemat storage.
-3.  **UI/UX Premium**:
-    - Tampilan responsif (Mobile Friendly Login).
-    - Feedback visual real-time (Loading states, Error messages).
 
 ---
 
