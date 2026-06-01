@@ -1,0 +1,307 @@
+// Prisma Schema for Sistem Dashboard Didik
+// Educational Archive Management System
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// AUTHENTICATION & USER MANAGEMENT
+// ==========================================
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  nama      String
+  email     String?
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activityLogs ActivityLog[]
+}
+
+// ==========================================
+// MODUL SISWA (STUDENTS)
+// ==========================================
+
+model Siswa {
+  id            Int      @id @default(autoincrement())
+  nis           String   @unique 
+  nisn          String?  
+  nama          String
+  jenisKelamin  String   
+  tempatLahir   String?
+  tanggalLahir  DateTime?
+  agama         String?
+  alamat        String?
+  telepon       String?
+  email         String?
+  
+  // Data Orang Tua
+  namaAyah       String?
+  pekerjaanAyah  String?
+  namaIbu        String?
+  pekerjaanIbu   String?
+  teleponOrtu    String?
+  alamatOrtu     String?
+  
+  // Data Akademik
+  kelas         String?
+  tahunMasuk    String?
+  tahunLulus    String?
+  status        String   @default("aktif") // aktif, lulus, pindah, keluar
+  
+  foto          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  presensi   PresensiSiswa[]
+  nilaiRapor NilaiRapor[]
+  dokumen    Dokumen[]
+}
+
+model PresensiSiswa {
+  id         Int      @id @default(autoincrement())
+  siswaId    Int
+  tanggal    DateTime
+  status     String   
+  keterangan String?
+  createdAt  DateTime @default(now())
+
+  siswa Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+
+  @@index([siswaId])
+  @@index([tanggal])
+}
+
+model NilaiRapor {
+  id          Int      @id @default(autoincrement())
+  siswaId     Int
+  semester    String   
+  tahunAjaran String   
+  kelas       String
+  nilai       Json     
+  rata        Float?
+  peringkat   Int?
+  keterangan  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  siswa Siswa @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+
+  @@index([siswaId])
+  @@index([tahunAjaran])
+}
+
+// ==========================================
+// MODUL GURU & STAF (TEACHERS & STAFF)
+// ==========================================
+
+model Guru {
+  id            Int       @id @default(autoincrement())
+  nip           String?   @unique 
+  nuptk         String?   
+  nama          String
+  jenisKelamin  String    
+  tempatLahir   String?
+  tanggalLahir  DateTime?
+  agama         String?
+  alamat        String?
+  telepon       String?
+  email         String?
+  
+  // Data Kepegawaian
+  jabatan       String?   
+  bidangStudi   String?   
+  pendidikan    String?   
+  jurusan       String?
+  tanggalMasuk  DateTime?
+  statusPegawai String    @default("aktif") 
+  jenisKontrak  String?   
+  
+  foto          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  presensi PresensiGuru[]
+  dokumen  Dokumen[]
+}
+
+model PresensiGuru {
+  id         Int       @id @default(autoincrement())
+  guruId     Int
+  tanggal    DateTime
+  jamMasuk   DateTime?
+  jamKeluar  DateTime?
+  status     String    
+  keterangan String?
+  createdAt  DateTime  @default(now())
+
+  guru Guru @relation(fields: [guruId], references: [id], onDelete: Cascade)
+
+  @@index([guruId])
+  @@index([tanggal])
+}
+
+// ==========================================
+// MODUL SARPRAS (FACILITIES & INVENTORY)
+// ==========================================
+
+model Sarpras {
+  id               Int       @id @default(autoincrement())
+  kodeBarang       String    @unique
+  namaBarang       String
+  kategori         String    
+  merk             String?
+  tahunPengadaan   Int?
+  jumlah           Int       @default(1)
+  satuan           String    @default("unit")
+  kondisi          String    @default("baik") 
+  lokasi           String?   
+  sumberDana       String?   
+  hargaSatuan      Decimal?  @db.Decimal(15, 2)
+  keterangan       String?
+  foto             String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  riwayatPemeliharaan RiwayatPemeliharaan[]
+}
+
+model RiwayatPemeliharaan {
+  id                 Int      @id @default(autoincrement())
+  sarprasId          Int
+  tanggal            DateTime
+  jenisPemeliharaan  String   
+  deskripsi          String?
+  pelaksana          String?
+  biaya              Decimal? @db.Decimal(15, 2)
+  kondisiSebelum     String?
+  kondisiSesudah     String?
+  buktiDokumen       String?
+  keterangan         String?
+  createdAt          DateTime @default(now())
+
+  sarpras Sarpras @relation(fields: [sarprasId], references: [id], onDelete: Cascade)
+
+  @@index([sarprasId])
+  @@index([tanggal])
+}
+
+// ==========================================
+// MODUL KEGIATAN (ACTIVITIES & EVENTS)
+// ==========================================
+
+model Kegiatan {
+  id              Int       @id @default(autoincrement())
+  namaKegiatan    String
+  jenisKegiatan   String    
+  tanggalMulai    DateTime
+  tanggalSelesai  DateTime?
+  waktuMulai      String?  
+  waktuSelesai    String?   
+  lokasi          String?
+  penanggungJawab String?
+  peserta         String?   
+  jumlahPeserta   Int?
+  anggaran        Decimal?  @db.Decimal(15, 2)
+  deskripsi       String?
+  status          String    @default("terjadwal") 
+  foto            String?   
+  fotoName        String?   
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  dokumentasi DokumentasiKegiatan[]
+}
+
+model DokumentasiKegiatan {
+  id         Int      @id @default(autoincrement())
+  kegiatanId Int
+  filePath   String
+  fileName   String
+  fileType   String   // image/jpeg, image/png, application/pdf
+  fileSize   Int?
+  judul      String?
+  keterangan String?
+  createdAt  DateTime @default(now())
+
+  kegiatan Kegiatan @relation(fields: [kegiatanId], references: [id], onDelete: Cascade)
+
+  @@index([kegiatanId])
+}
+
+// ==========================================
+// MODUL DIGITALISASI DOKUMEN (DOCUMENTS)
+// ==========================================
+
+model Dokumen {
+  id             Int       @id @default(autoincrement())
+  
+  // Linking to Entity (optional - can be linked to siswa or guru)
+  siswaId        Int?
+  guruId         Int?
+  
+  // Document Info
+  jenisDokumen   String    // ijazah, akta, rapor, sk, sertifikat, ktp, kk, dll
+  nomorDokumen   String?
+  periodeArsip   String?   // 2024, 2024/2025, dll
+  tanggalDokumen DateTime?
+  
+  // File Info
+  filePath       String
+  fileName       String
+  fileType       String    // application/pdf, image/jpeg, image/png
+  fileSize       Int?
+  
+  // Metadata
+  sumberInput    String    @default("upload") // upload, kamera
+  keterangan     String?
+  tags           String?   // comma separated tags
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  siswa Siswa? @relation(fields: [siswaId], references: [id], onDelete: SetNull)
+  guru  Guru?  @relation(fields: [guruId], references: [id], onDelete: SetNull)
+
+  @@index([siswaId])
+  @@index([guruId])
+  @@index([jenisDokumen])
+  @@index([periodeArsip])
+}
+
+// ==========================================
+// ACTIVITY LOG
+// ==========================================
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  adminId     Int?
+  action      String   // create, update, delete, login, logout
+  module      String   // siswa, guru, sarpras, kegiatan, dokumen
+  entityId    Int?
+  description String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  admin Admin? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([adminId])
+  @@index([module])
+  @@index([createdAt])
+}

@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Base Styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   GLOBAL CURSOR POINTER
+   ============================================ */
+button,
+a,
+[role="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+input[type="checkbox"],
+input[type="radio"],
+label[for],
+select,
+summary,
+.cursor-pointer,
+.react-datepicker__input-container input {
+  cursor: pointer !important;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+a[aria-disabled="true"],
+[disabled] {
+  cursor: not-allowed !important;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea {
+  cursor: text !important;
+}
+
+/* ============================================
+   ANIMATIONS & UTILITIES
+   ============================================ */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* Table Styles */
+.table-container {
+  @apply overflow-x-auto rounded-xl border border-slate-200 bg-white;
+}
+
+.table-container table {
+  @apply w-full text-sm;
+}
+
+.table-container thead {
+  @apply bg-slate-50 border-b border-slate-200;
+}
+
+.table-container th {
+  @apply px-4 py-3 text-left font-semibold text-slate-700 uppercase text-xs tracking-wider;
+}
+
+.table-container td {
+  @apply px-4 py-3 border-b border-slate-100 text-slate-600;
+}
+
+.table-container tbody tr:hover {
+  @apply bg-slate-50/80 transition-colors;
+}
+
+.table-container tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+
+.react-datepicker {
+  @apply font-sans border border-slate-200 rounded-xl bg-white p-4;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  background-color: white !important;
+  font-family: inherit !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.react-datepicker-popper {
+  z-index: 50 !important;
+  padding-top: 8px !important;
+}
+
+.react-datepicker__header {
+  @apply bg-white border-b border-slate-100 pt-0 pb-4;
+  background-color: white !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+/* Month & Year Selects Container */
+.react-datepicker__header__dropdown {
+  @apply flex items-center justify-center gap-2 mb-4;
+  display: flex !important;
+}
+
+/* Select Elements (Year/Month) */
+.react-datepicker__year-select,
+.react-datepicker__month-select {
+  @apply appearance-none bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg px-3 py-1.5 cursor-pointer hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors;
+  padding-right: 1.5rem !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.25rem center;
+  background-repeat: no-repeat;
+  background-size: 1.25em 1.25em;
+}
+
+/* Day Names (Mo, Tu, We...) */
+.react-datepicker__day-names {
+  @apply flex justify-between px-2 mt-2;
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.react-datepicker__day-name {
+  @apply text-slate-400 font-medium text-xs w-9 h-9 flex items-center justify-center m-0;
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  margin: 0 !important;
+}
+
+/* Month Container */
+.react-datepicker__month {
+  @apply m-0 px-2;
+  margin: 0 !important;
+}
+
+.react-datepicker__week {
+  @apply flex justify-between mb-1;
+  display: flex !important;
+}
+
+/* Day Cells */
+.react-datepicker__day {
+  @apply w-9 h-9 flex items-center justify-center rounded-lg text-sm text-slate-700 m-0 transition-all duration-200 relative;
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  margin: 0 !important;
+}
+
+.react-datepicker__day:hover {
+  @apply bg-indigo-50 text-indigo-700 font-medium;
+  background-color: #eef2ff !important;
+  color: #4338ca !important;
+}
+
+/* Selected Day - INDIGO THEME */
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  @apply bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-500/20;
+  background-color: #4f46e5 !important;
+  color: white !important;
+}
+
+.react-datepicker__day--selected:hover {
+  @apply bg-indigo-700;
+  background-color: #4338ca !important;
+}
+
+/* Today */
+.react-datepicker__day--today {
+  @apply text-indigo-600 font-bold bg-indigo-50/50;
+  color: #4f46e5 !important;
+  background-color: rgba(238, 242, 255, 0.5) !important;
+}
+
+/* Outside Month */
+.react-datepicker__day--outside-month {
+  @apply text-slate-300 pointer-events-none;
+  color: #cbd5e1 !important;
+}
+
+/* Navigation Arrows */
+.react-datepicker__navigation {
+  top: 1.25rem !important;
+}
+.react-datepicker__navigation--previous {
+  left: 1rem !important;
+}
+.react-datepicker__navigation--next {
+  right: 1rem !important;
+}
+
+.react-datepicker__triangle {
+  display: none !important;
+}
+
+.react-datepicker__aria-live {
+  display: none;
+}
